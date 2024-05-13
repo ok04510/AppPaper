@@ -17,20 +17,20 @@ namespace ASP.NET_MVC研修5.Models
         public string ソート列;
         public string ソート順;
 
-        public string 表示区分;
 
         public void Find(ApplicationIConditionModel condition)
         {
-            //string sql = "select * from application_info where APPLY_STATUS = '" + 表示区分 + "'";
+            現ページ = 1;
+
             string sql = "select * from application_info ";
 
             MySqlConnection con = new MySqlConnection(
                 "server=localhost;port=3306;userid=root;password=root;" +
                 "database = csharp; convert zero datetime=True");
 
-            if (condition.状態 != null && condition.状態 != "")
+            if (condition.表示状態 != null && condition.表示状態 != "")
             {
-                sql = sql + "where application_info.APPLY_STATUS =" + condition.状態 + "";
+                sql = sql + "where application_info.APPLY_STATUS =" + condition.表示状態 + "";
             }
 
             con.Open();
@@ -70,39 +70,26 @@ namespace ASP.NET_MVC研修5.Models
 
         public void GetPage(int rowCount, int pageNum)
         {
-            // 改ページが必要ない
-            // もし、全てのデータを表示したい(rowCount == 0)
-            // または「検索結果一覧」の件数が表示したい件数以下であれば、
-            // 「表示一覧」は「検索結果一覧」と等しい
             if (rowCount == 0 || 検索結果一覧.Count <= rowCount)
             {
                 表示一覧 = 検索結果一覧;
             }
             else
             {
-                // 表示件数が変わっていない時
-                // もし、今回の表示件数(rowCount)は前回の「表示件数」と同じである場合
                 if (rowCount == 表示件数)
                 {
-                    // 　　「検索結果一覧」の中にある全ての要素に対して、
-                    //         ↓　要素のインデックスは表示したいページに該当すると、
-                    //         ↓　その要素を取り出し、配列に入れる
                     表示一覧 = 検索結果一覧   // ↓
                         .Where((item, index) => index >= (pageNum - 1) *
                             rowCount && index < pageNum * rowCount)
-                        // ↓Whereで作成された配列をリスト型に変換し、
-                        //  「表示一覧」に設定する
                             .ToList();
-                }    // 今回の表示件数（rowCount）は前回の「表示一覧」に設定する
-                else // 1ページ目のデータを選択する
+                }
+                else
                 {
-                    // 1ページメモデータを「表示一覧」に設定する
                     表示一覧 = 検索結果一覧.Where((item, index) =>
                         index < rowCount).ToList();
                 }
             }
 
-            // 「表示件数」と「現ページ」を再設定する
             表示件数 = rowCount;
             現ページ = pageNum;
         }

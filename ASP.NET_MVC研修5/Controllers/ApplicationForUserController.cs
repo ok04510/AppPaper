@@ -11,25 +11,17 @@ namespace ASP.NET_MVC研修5.Controllers
     {
         //
         // GET: /ApplicationForUser/
-        /*public ActionResult Index(string colName, string sortOrder, ApplicationIConditionModel condition)
+        public ActionResult Index(ApplicationIConditionModel condition)
         {
             ApplicationInfoModel Appinfomodel = new ApplicationInfoModel();
 
-            //Appinfomodel.表示区分 = 0;
             Appinfomodel.表示件数 = 10;
 
             Appinfomodel.Find(condition);
-
-            //Appinfomodel.Sort(colName, sortOrder);
-            //Appinfomodel.Sort(Appinfomodel.ソート列, Appinfomodel.ソート順);
+            Appinfomodel.Sort("申請ID", "▼");
 
             Session["ユーザー検索"] = Appinfomodel;
-
             return View("ApplicationManage", Appinfomodel);
-        }*/
-        public ActionResult Index()
-        {
-            return View("ApplicationManage");
         }
 
 
@@ -63,7 +55,9 @@ namespace ASP.NET_MVC研修5.Controllers
         {
             // 「Find」メソッドで保存したデータをSessionから抽出する
             ApplicationInfoModel Appinfomodel = (ApplicationInfoModel)Session["ユーザー検索"];
+
             Appinfomodel.GetPage(rowCount, pageNum);
+            
             return PartialView("_ApplicationList", Appinfomodel);
         }
         
